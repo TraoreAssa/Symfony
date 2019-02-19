@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title> {% block title%} MA Platform {% endblock%} </title>
+      <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.min.css" >
+      <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+      {% block stylesheets %} {% endblock%}
+
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <a class="navbar-brand" href="#">SUPPERAPP</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="true" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{path('ma_platform_home')}}">Accueil <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{path('ma_platform_add')}}">Ajouter une Annonce</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Supprimer une Annonce</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Modifier une Annonce</a>
+          </li>
+        </ul>
+
+        <div class="d-flex justify-content-end">
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+
+      </div>
+    </nav>
+
+    <h4 class="col-md-5 offset-md-2">Les annonces du jour </h4>
+    <br/>
+
+    
+      <div class="col-md-6 offset-md-3" id="menu">
+        <br/>
+        <br/>
+        <br/>
+
+        {{ render(controller("MAPlatformBundle:Advert:menu", {'limit':4}))}}
+      
+    </div>
+
+      <div class="col-md-8 offset-md-2" id="content">    
+        {% block body %}
+        {% endblock%}
+      </div>
+  </body>
+
+    {% block javascript %}
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+      <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    {% endblock%}
+
+    <footer class="col-md-2 offset-md-5 text-center well">
+      <p>
+        Cette application a été développée par <br> Assa TRAORE en {{'now'|date('Y') }}
+      </p>
+    </footer>
+</html>

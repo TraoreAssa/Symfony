@@ -1,1 +1,23 @@
 {% extends "MAPlatformBundle::layout.html.twig" %}
+
+{% block title %} 
+    Modifier une annonce {{ parent() }}
+{% endblock %}
+
+{% block maplatform_body %}
+    <h2> Modifier une annonce </h2>
+    <hr>
+{{include ("MAPlatformBundle:Advert:form.html.twig")}}
+
+<p>
+    Ici a lieu la modification d'une annonce existante
+</p>
+
+<p>
+    <a class="btn btn-primary col-md-4 offset-md-4" href="{{path('ma_platform_view', {'id': advert.id})}}">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour a l'annonces
+    </a>
+</p>
+
+{% endblock %}

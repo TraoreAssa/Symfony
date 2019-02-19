@@ -1,38 +1,61 @@
 {% extends "MAPlatformBundle::layout.html.twig" %}
 
-
 {% block title %} {{ parent() }} - Index {% endblock %}
 
-{% block body %}
+{% block maplatform_body %}
 
-<h1>L'annonce numéro{{num}} est vraiment top!</h1>
-<p> Check this out: </p>
-<a href="{{path('ma_platform_view',{'id':num}) }}">Lien vers l'annonce d'id {{num}}</a>
+         <h3 class="text-center">Liste des annonces</h3>
+
+        <ul>
+            {% for advert in listAdverts %}
+                <li>
+                    <a class="btn btn-outline-dark btn-lg" href="{{ path('ma_platform_view', {'id':advert.id}) }}">
+                    {{ advert.title }}
+                    </a>
+
+                    par {{advert.author}}
+                    le {{advert.date | date('d/m/Y')}}
+                </li>
+            {%else%}
+                <li>
+                    Pas encore d'annonces Sorry !!!
+                </li>
+            {% endfor %}
+        </ul>
+{% endblock %}
 
 
-<p>
+{# <a href="{{path('ma_platform_view',{'id':num}) }}">Lien vers l'annonce d'id {{num}}</a> #}
+
+
+{# <p class="text-justify">
     L'histoire des petites annonces n'est pas dissociable de celle de la presse. Lorsque Théophraste Renaudot crée La Gazette en 1631 avec l'appui du cardinal de Richelieu, il organise dans ce premier journal français un bureau d'adresses et de renseignement. La petite annonce naît donc de deux mouvements conjoints : d'une part, la nécessité de financer le journal par des publicités et, d'autre part, la conscience naissante de la création d'une sphère publique. L'idée s'impose peu à peu que l'ensemble de ce qui deviendra la société des citoyens au siècle suivant doit avoir accès à l'information, et parallèlement il devient plus commun de penser que l'on peut faire se rencontrer les gens par le biais d'une publication. Aussi peut-on trouver dans les publications du xixe siècle un cocher, un valet ou une femme de chambre, mais aussi une calèche à partager pour tel ou tel voyage.
 
     Le xxe siècle voit l'essor des petites annonces de rencontre, sous l'influence des personal ads américaines. Pour la France, si le Minitel puis Internet sont devenus le support privilégié de cette pratique, la petite annonce n'a pourtant pas quitté la presse écrite, comme le prouvent les colonnes du Chasseur français ou de Libération.
-</p>
+   </p> 
+#}
 
-<br><br>
 
-{% if num <10 %}
-    Nous sommes dans les premiere page du site
 
-{% elseif num <20 %}
-    Nous sommes dans les pages secondaires du site
+{#
+    {% if num <10 %}
+        Nous sommes dans les premiere page du site
 
-{% else %}
-    Nous sommes dans les dernières page du site
+    {% elseif num <20 %}
+        Nous sommes dans les pages secondaires du site
 
-{% endif %}
+    {% else %}
+        Nous sommes dans les dernières page du site
 
-{% if num is defined %}
-    La variable est biendefinie(équivalent de isset)
+    {% endif %}
+
+    {% if num is defined %}
+        La variable est biendefinie(équivalent de isset)
+        
+    {% endif %}
+
+#}
+
+  
     
-{% endif %}
-    
-    
-<footer>Responsable du site est: {{webmaster}} .</footer> {% endblock %}
+{# <footer class="text-center">Responsable du site est: {{webmaster}} .</footer> {% endblock %} #}

@@ -22,7 +22,30 @@ class AdvertController extends Controller //controler => fonction get
         if($page<1){
             throw new NotFoundHttpException('Page' . $page . "inexistante");
         }
-        return $this->render('MAPlatformBundle:Advert:index.html.twig', array('num' => $page));
+
+        $listAdverts = array(
+            array(
+              'title'   => 'Recherche développpeur Symfony',
+              'id'      => 1,
+              'author'  => 'Alexandre',
+              'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon.',
+              'date'    => new \Datetime()),
+            array(
+              'title'   => 'Mission de webmaster',
+              'id'      => 2,
+              'author'  => 'Hugo',
+              'content' => 'Nous recherchons un webmaster capable de maintenir notre site internet.',
+              'date'    => new \Datetime()),
+            array(
+              'title'   => 'Offre de stage webdesigner',
+              'id'      => 3,
+              'author'  => 'Mathieu',
+              'content' => 'Nous proposons un poste pour webdesigner.',
+              'date'    => new \Datetime())
+       );
+
+
+        return $this->render('MAPlatformBundle:Advert:index.html.twig', array('listAdverts' => $listAdverts));
         // return new Response('Notre propre Hello World ! ');
         // $content0 =  $this->get('templating')->render('MAPlatformBundle:Advert:index.html.twig', array('prenom' => 'Assa') );
 
@@ -46,12 +69,25 @@ class AdvertController extends Controller //controler => fonction get
 
     // app.session | app.request | app.environment | app.debug | app.user  ==> variable a connaitre
 
-    public function viewAction($id, Request $request)
+    public function viewAction($id)
     {
+     
+        $advert = array(
+        'title'   => 'Recherche développpeur Symfony2',
+        'id'      => $id,
+        'author'  => 'Alexandre',
+        'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon.',
+        'date'    => new \Datetime()
+        );
 
         return $this->render('MAPlatformBundle:Advert:view.html.twig', array(
-            'id' => $id
-            ));
+        'advert' => $advert
+        ));
+    
+
+        // return $this->render('MAPlatformBundle:Advert:view.html.twig', array(
+        //     'id' => $id
+        //     ));
         
 
         // $tag = $request->query->get('tag');
@@ -135,7 +171,16 @@ class AdvertController extends Controller //controler => fonction get
             $request->getSession()->getFlashBag()->add('notice', 'Modification effective');
             return $this->redirectToRoute("ma_platform_view",array('id' => 23));
         }
-        return $this->render('MAPlatformBundle:Advert:edit.html.twig');
+
+        $advert = array(
+            'title'   => 'Recherche développpeur Symfony2',
+            'id'      => $id,
+            'author'  => 'Alexandre',
+            'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon.',
+            'date'    => new \Datetime()
+            );
+
+        return $this->render('MAPlatformBundle:Advert:edit.html.twig', array('advert'=>$advert));
         
     }
 
@@ -147,6 +192,18 @@ class AdvertController extends Controller //controler => fonction get
    
     public function addAction(Request $request)
     {   
+        // Récuperation de mon service en l'istanciant
+
+        $antispam=$this->container->get('ma_platform.antispam');
+
+        $text = "...";
+
+        if ($antispam->isSpam($text)) {
+            throw new \Exception("Votre message a été détecté comme un spam !");
+        }
+
+        //TOUT CE QUI A EN DESSOUS SON CONCERNE LES MESSAGES NON SPAM !!!!
+
         if ($request->isMethod('POST')){
             $session = $request->getSession();
             // on ajoute une certaine annoce et on la publie
@@ -164,7 +221,7 @@ class AdvertController extends Controller //controler => fonction get
         
     }
    
-    public function menuAction(Request $request)
+    public function menuAction(Request $request, $limit)
     {   
       $listAdverts= array(
           array('id'=> 101, 'title'=> 'Recherche Developpeur Symfony'),

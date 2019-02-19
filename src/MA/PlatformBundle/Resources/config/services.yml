@@ -1,4 +1,7 @@
 services:
-#    ma_platform.example:
-#        class: MA\PlatformBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    ma_platform.antispam:
+        class: MA\PlatformBundle\Antispam\MAAntispam
+        arguments: 
+          - "@mailer"
+          - %locale%
+          - 30

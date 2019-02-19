@@ -1,21 +1,36 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Annonce {{id}} </title>
-    </head>
-    <body>
-        <h1> Hello à tous - Bienvenue sur l'annoce {{id}} ! </h1>
+{% extends "MAPlatformBundle::layout.html.twig" %}
 
-        </br></br>
+{% block title %} 
+    {{ parent() }} - Vue de mon Annonce 
+{% endblock %}
 
-        <div>
-            {% for message in app.session.flashbag.get('info') %}
-            <p>Message du flash : {{message}}
-            {% endfor %}
-        </div>
+{% block maplatform_body %}
+    <h2> {{advert.title}} </h2>
+    <i>Par {{advert.author}}, le {{ advert.date|date('d/m/Y')}} </i>
+    
+    <div class="well">
+        {{advert.content}}
+    </div>
 
-        <p> Ici nous pourrons lire l'annoce ayant comme id : {{id}} <br/>
-        Mais pour l'instant, nous ne savons pas encore le faire, cela viendra! </p>
+    <br/>
+    <br/>
 
-    </body>
-</html>
+    <a class="btn btn-primary btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_home')}}">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour a la liste des annonces
+    <br/>
+    </a>
+
+    <a class="btn btn-primary btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_edit',{'id': advert.id}) }}">
+        <i class="glyphicon glyphicon-edit"></i>
+            Modifier l'annonce
+    <br/>
+    </a>
+
+    <a class="btn btn-danger btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_delete',{'id': advert.id}) }}">
+        <i class="glyphicon glyphicon-chevron-left">    </i>
+            Supprimer l'annonce
+    <br/>
+    </a>
+
+{% endblock %}
