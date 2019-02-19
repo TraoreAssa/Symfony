@@ -1,0 +1,39 @@
+ma_platform_home:
+    path: /{page}
+    defaults:
+        _controller: MAPlatformBundle:Advert:index
+        page: 1
+    requirements:
+        page: \d*
+        
+
+ma_platform_view:
+    path: /advert/{id}
+    defaults: { _controller: MAPlatformBundle:Advert:view }
+    requirements:
+        id: \d*
+
+ma_platform_view_slug:
+    path: /{year}/{slug}.{format}
+    defaults: 
+        _controller: MAPlatformBundle:Advert:viewSlug
+        format: html
+    requirements:
+        year: \d{4}
+        format: html|xml
+
+ma_platform_add:
+    path: /add
+    defaults: { _controller: MAPlatformBundle:Advert:add }
+
+ma_platform_edit:
+    path: /edit/{id}
+    defaults: { _controller: MAPlatformBundle:Advert:edit }
+    requirements:
+        id: \d*
+
+ma_platform_delete:
+    path: /delete/{id}
+    defaults: { _controller: MAPlatformBundle:Advert:delete }
+    requirements:
+        id: \d*

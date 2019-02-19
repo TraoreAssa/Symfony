@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Annonce {{id}} </title>
+    </head>
+    <body>
+        <h1> Hello à tous - Bienvenue sur l'annoce {{id}} ! </h1>
+
+        </br></br>
+
+        <div>
+            {% for message in app.session.flashbag.get('info') %}
+            <p>Message du flash : {{message}}
+            {% endfor %}
+        </div>
+
+        <p> Ici nous pourrons lire l'annoce ayant comme id : {{id}} <br/>
+        Mais pour l'instant, nous ne savons pas encore le faire, cela viendra! </p>
+
+    </body>
+</html>

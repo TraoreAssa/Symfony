@@ -1,0 +1,3 @@
+ma_platform:
+    resource: "@MAPlatformBundle/Resources/config/routing.yml"
+    prefix:   /platform
