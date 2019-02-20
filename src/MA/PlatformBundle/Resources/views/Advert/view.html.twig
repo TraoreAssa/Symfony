@@ -8,27 +8,31 @@
     <h2> {{advert.title}} </h2>
     <i>Par {{advert.author}}, le {{ advert.date|date('d/m/Y')}} </i>
     
-    <div class="well">
+    {% if advert.image is not null%}
+        <img src=" {{advert.image.url}}" alt=" {{advert.image.alt}}">
+    {% endif%}
+
+    <div class="well text-center">
         {{advert.content}}
     </div>
 
     <br/>
     <br/>
 
-    <a class="btn btn-primary btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_home')}}">
+    <a class="btn btn-dark btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_home')}}">
         <i class="glyphicon glyphicon-chevron-left"></i>
             Retour a la liste des annonces
     <br/>
     </a>
 
-    <a class="btn btn-primary btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_edit',{'id': advert.id}) }}">
+    <a class="btn btn-dark btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_edit',{'id': advert.id}) }}">
         <i class="glyphicon glyphicon-edit"></i>
             Modifier l'annonce
     <br/>
     </a>
 
-    <a class="btn btn-danger btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_delete',{'id': advert.id}) }}">
-        <i class="glyphicon glyphicon-chevron-left">    </i>
+    <a class="btn btn-dark btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_delete',{'id': advert.id}) }}">
+        <i class="glyphicon glyphicon-chevron-trash"></i>
             Supprimer l'annonce
     <br/>
     </a>

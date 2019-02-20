@@ -2,6 +2,8 @@
 
 namespace MA\PlatformBundle\Controller;
 
+use MA\PlatformBundle\Entity\Advert;
+use MA\PlatformBundle\Entity\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -9,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\NotFoundHttpException;
+
+
 
 
 
@@ -69,20 +73,32 @@ class AdvertController extends Controller //controler => fonction get
 
     // app.session | app.request | app.environment | app.debug | app.user  ==> variable a connaitre
 
-    public function viewAction($id)
+    public function viewAction($id, Request $request)
     {
-     
-        $advert = array(
-        'title'   => 'Recherche développpeur Symfony2',
-        'id'      => $id,
-        'author'  => 'Alexandre',
-        'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon.',
-        'date'    => new \Datetime()
-        );
 
-        return $this->render('MAPlatformBundle:Advert:view.html.twig', array(
-        'advert' => $advert
-        ));
+        //on recupere le Repository
+
+        $repository=$this->getDoctrine()->getManager()->getRepository('MAPlatformBundle:Advert');
+
+        $advert= $repository->find($id);
+        if (null == $advert) {
+            throw new NotFoundHTTPException("L'annoce de l'id".$id. "n'existe pas en base de données.");
+            
+        }
+        
+        return $this->render("MAPlatformBundle:Advert:view.html.twig", array('advert'=>$advert));
+     
+        // $advert = array(
+        // 'title'   => 'Recherche développpeur Symfony2',
+        // 'id'      => $id,
+        // 'author'  => 'Alexandre',
+        // 'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon.',
+        // 'date'    => new \Datetime()
+        // );
+
+        // return $this->render('MAPlatformBundle:Advert:view.html.twig', array(
+        // 'advert' => $advert
+        // ));
     
 
         // return $this->render('MAPlatformBundle:Advert:view.html.twig', array(
@@ -192,33 +208,60 @@ class AdvertController extends Controller //controler => fonction get
    
     public function addAction(Request $request)
     {   
+     
+        // Créer l'entité
+        $advert = new Advert();
+        $advert->setTitle('Mission Angular Ionic');
+        $advert->setAuthor('Microsoft');
+        $advert->setContent('Nous recherchons un développeur spécialisé en Framework front Angular et maitrise également le Framework Mobile Ionic avec les bibliotheques de Cordova. 950$/day');
+        $advert->setDate(new \Datetime);
+        $advert->setPublished(true);
+
+        $image= new Image();
+        $image->setUrl('https://11m5ki43y82budjol1gjvv5s-wpengine.netdna-ssl.com/wp-content/uploads/2018/10/angular-virtual-scroll-drag-drop-main.jpg');
+        $image->setAlt('Angular');
+
+        $advert->setimage($image);
+        //$em->persist($image);
+       
+        
+        // on peut ne pas definir ni la date ni la publication car ces attribut sont définis auto dans le constructeur
+        
+        //Récupération de l'entyty Manager
+        $em=$this->getDoctrine()->getManager();
+
+        //INSERT DES OBJET        
+        // Persister l'entité <=> la sauvegarder dans la BDD
+        $em->persist($advert); // sert a insert (Prépare toi sauvegarder(temporairement))
+        $em->flush(); //Sauvegarde le dans la BDD 
+
+
+            if ($request->isMethod('POST')){
+                $session = $request->getSession();
+                // on ajoute une certaine annoce et on la publie
+                $session->getflashBag()->add('info', 'Votre annoce a bien été ajouté');
+                // j'inscris ce qu'il se passe dans la mémoire flash
+            
+               return $this->redirectToRoute("ma_platform_view", array('id' => $advert->getId())); 
+            }
+
+            // if not method posix_times
+
+                return $this->render('MAPlatformBundle:Advert:add.html.twig', array('advert'=>$advert));
+        
+        //TOUT CE QUI A EN DESSOUS SON CONCERNE LES MESSAGES NON SPAM !!!!
+           
         // Récuperation de mon service en l'istanciant
 
-        $antispam=$this->container->get('ma_platform.antispam');
+        // $antispam=$this->container->get('ma_platform.antispam');
 
-        $text = "...";
+        // $text = "...";
 
-        if ($antispam->isSpam($text)) {
-            throw new \Exception("Votre message a été détecté comme un spam !");
-        }
+        // if ($antispam->isSpam($text)) {
+        //     throw new \Exception("Votre message a été détecté comme un spam !");
+        // }
 
-        //TOUT CE QUI A EN DESSOUS SON CONCERNE LES MESSAGES NON SPAM !!!!
-
-        if ($request->isMethod('POST')){
-            $session = $request->getSession();
-            // on ajoute une certaine annoce et on la publie
-            $session->getflashBag()->add('info', 'Annoce a été ajouté');
-            // j'inscris ce qu'il se passe dans la mémoire flash
-            $session->getflashBag()->add('info', 'je repete l annoce a été ajouté');
-            $session->getflashBag()->add('info', 'Hello annoce a été ajouté');
-            $session->getflashBag()->add('info', 'Bon derniere fois : l annoce a été ajouté');
-            // ajouter d'autre messages
-           
-           return $this->redirectToRoute("ma_platform_view", array('id' => 25)); 
-        }
-
-        return $this->render('MAPlatformBundle:Advert:add.html.twig');
-        
+      
     }
    
     public function menuAction(Request $request, $limit)
