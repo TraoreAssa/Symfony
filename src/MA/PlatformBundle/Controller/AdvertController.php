@@ -4,6 +4,8 @@ namespace MA\PlatformBundle\Controller;
 
 use MA\PlatformBundle\Entity\Advert;
 use MA\PlatformBundle\Entity\Image;
+use MA\PlatformBundle\Entity\Application;
+use MA\PlatformBundle\Entity\AdvertSkill;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -81,12 +83,20 @@ class AdvertController extends Controller //controler => fonction get
         $repository=$this->getDoctrine()->getManager()->getRepository('MAPlatformBundle:Advert');
 
         $advert= $repository->find($id);
+
         if (null == $advert) {
             throw new NotFoundHTTPException("L'annoce de l'id".$id. "n'existe pas en base de données.");
             
         }
-        
-        return $this->render("MAPlatformBundle:Advert:view.html.twig", array('advert'=>$advert));
+        $repository2= $this->getDoctrine()->getManager()->getRepository('MAPlatformBundle:Application');
+        $listApplications= $repository2->findBy(array('advert' => $advert));
+
+
+        return $this->render("MAPlatformBundle:Advert:view.html.twig", array(
+            'advert'=>$advert,
+            'listApplications'=>$listApplications,
+            
+    ));
      
         // $advert = array(
         // 'title'   => 'Recherche développpeur Symfony2',
@@ -182,19 +192,39 @@ class AdvertController extends Controller //controler => fonction get
 
     public function editAction($id, Request $request)
     {
+        $em=$this->getDoctrine()->getManager();
+
+        // Récupere l'annonce a modifier
+        
+        $advert=$em->getRepository('MAPlatformBundle:Advert')->find($id);
+
+        if (null == $advert) {
+            throw new NotFoundHTTPException("L'annoce de l'id".$id. "n'existe pas en base de données.");
+        }
+
+        $listCategories = $em->getRepository('MAPlatformBundle:Category')->findALL();
+
+        foreach ($listCategories as $category) {
+            $advert->addCategory($category);
+        }
+
+        $em->flush();
+
         if($request->isMethod("POST"))
         {
             $request->getSession()->getFlashBag()->add('notice', 'Modification effective');
             return $this->redirectToRoute("ma_platform_view",array('id' => 23));
         }
 
-        $advert = array(
-            'title'   => 'Recherche développpeur Symfony2',
-            'id'      => $id,
-            'author'  => 'Alexandre',
-            'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon.',
-            'date'    => new \Datetime()
-            );
+       
+
+        // $advert = array(
+        //     'title'   => 'Recherche développpeur Symfony2',
+        //     'id'      => $id,
+        //     'author'  => 'Alexandre',
+        //     'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon.',
+        //     'date'    => new \Datetime()
+        //     );
 
         return $this->render('MAPlatformBundle:Advert:edit.html.twig', array('advert'=>$advert));
         
@@ -202,6 +232,23 @@ class AdvertController extends Controller //controler => fonction get
 
     public function deleteAction($id)
     {
+
+
+        $em=$this->getDoctrine()->getManager();
+
+        // Récupere l'annonce a supp
+        
+        $advert=$em->getRepository('MAPlatformBundle:Advert')->find($id);
+
+        if (null == $advert) {
+            throw new NotFoundHTTPException("L'annoce de l'id".$id. "n'existe pas en base de données.");
+        }
+
+        foreach ($advert->getCategories() as $category) {
+            $advert->removeCategory($category);
+        }
+        $em->flush();
+        
         return $this->render('MAPlatformBundle:Advert:delete.html.twig');
         
     }
@@ -209,7 +256,12 @@ class AdvertController extends Controller //controler => fonction get
     public function addAction(Request $request)
     {   
      
-        // Créer l'entité
+         //Récupération de l'entyty Manager
+         $em=$this->getDoctrine()->getManager();
+         //doctrine = Service  
+
+
+        // Créer l'entité (Creation de mon annonce)
         $advert = new Advert();
         $advert->setTitle('Mission Angular Ionic');
         $advert->setAuthor('Microsoft');
@@ -217,22 +269,52 @@ class AdvertController extends Controller //controler => fonction get
         $advert->setDate(new \Datetime);
         $advert->setPublished(true);
 
+        //------------------- Image --------------
         $image= new Image();
-        $image->setUrl('https://11m5ki43y82budjol1gjvv5s-wpengine.netdna-ssl.com/wp-content/uploads/2018/10/angular-virtual-scroll-drag-drop-main.jpg');
-        $image->setAlt('Angular');
+        $image->setUrl('https://www.cnetfrance.fr/i/edit/2018/10/microsoft-1-big.jpg');
+        $image->setAlt('Microsoft');
 
         $advert->setimage($image);
         //$em->persist($image);
-       
+
+        //------------------------Candidature --------------------
+        //Création des Applications/Candidature 1
+        $application1 = new Application;
+        $application1->setAuthor('Marc Dupont');
+        $application1->setContent('Je suis un jeune etudiant Développeur Angular avec 5ans d\'experiance a la recherche d\un nouveau post. Je suis disponible dès aujourd\'hui ');
+        $application1->setAdvert($advert);
+        
+        
+        
+        //Création des Applications/Candidature 2
+        $application2 = new Application;
+        $application2->setAuthor('Assa TRAORE');
+        $application2->setContent('Je suis une Développeuse Intégratrice a la recherche d\'un stage pour valider ma formation Je suis disponible dès aujourd\'hui ');
+        $application2->setAdvert($advert);
+
         
         // on peut ne pas definir ni la date ni la publication car ces attribut sont définis auto dans le constructeur
+
+        //--------------------------- Competences -------------
+        $listSkills = $em->getRepository('MAPlatformBundle:Skill')->findALL();
+
+        foreach ($listSkills as $skill) {
+            $advertSkill = new AdvertSkill();
+            $advertSkill->setAdvert($advert);
+            $advertSkill->setSkill($skill);
+            $advertSkill->setLevel('Expert');
+
+            $em->persist($advertSkill);
         
-        //Récupération de l'entyty Manager
-        $em=$this->getDoctrine()->getManager();
+        }
+        
+           
 
         //INSERT DES OBJET        
         // Persister l'entité <=> la sauvegarder dans la BDD
         $em->persist($advert); // sert a insert (Prépare toi sauvegarder(temporairement))
+        $em->persist($application1);
+        $em->persist($application2);
         $em->flush(); //Sauvegarde le dans la BDD 
 
 
@@ -277,5 +359,20 @@ class AdvertController extends Controller //controler => fonction get
 
 
         
+    }
+    
+    public function editImageAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        // 1ere recuperer la bonne annoce
+        
+        $advert=$em->getRepository("MAPlatformBundle:Advert")->find($id);
+
+        $advert->getImage()->setUrl('https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/M_box.svg/langfr-280px-M_box.svg.png');
+        
+        $em->flush(); //Sauvegarde le dans la BDD 
+        return new Response('OK');
+
     }
 }

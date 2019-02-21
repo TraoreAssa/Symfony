@@ -6,17 +6,57 @@
 
 {% block maplatform_body %}
     <h2> {{advert.title}} </h2>
-    <i>Par {{advert.author}}, le {{ advert.date|date('d/m/Y')}} </i>
     
-    {% if advert.image is not null%}
-        <img src=" {{advert.image.url}}" alt=" {{advert.image.alt}}">
-    {% endif%}
+    
+    <i>Par {{advert.author}}, le {{ advert.date|date('d/m/Y')}} </i>
+    <br>
+        <br>
+        {% if advert.image is not null%}
+            <img src="{{advert.image.url}}" width="350px" alt=" {{advert.image.alt}}">
+        {% endif%}
 
-    <div class="well text-center">
-        {{advert.content}}
-    </div>
+        <div class="well bg-dark col-md-11 offset-md-1 text-white text-center">
 
+            {{advert.content}}
+        </div>
+
+    
     <br/>
+
+            <div class="col-md-9 offset-md-2 well text-center">
+                {% if not advert.categories.empty %}
+                    <p>
+                        Cette annonce est parue dans les catégories suivantes :
+                        {% for category in advert.categories %}
+                        {{category.name}}{% if not loop.last %},{% endif %}
+
+                        {% endfor %}
+                    </p>
+                {%endif%}
+                <br/>
+            </div>
+    
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <h3 class=" col-md-8 offset-md-2 text-center">Liste des Candidatures</h3>
+
+        <ul>
+            {% for app in listApplications %}
+                <div class="col-md-4 offset-md-4 well text-center">
+                        <i><strong>{{app.author}} - le {{app.date | date('d/m/Y')}}</strong></i><br/>
+                        <p>{{app.content}}</p>
+                </div>
+            {%else%}
+                <li>
+                    Pas encore d'Application Sorry !!!
+                </li>
+            {% endfor %}
+        </ul>
+    
+
     <br/>
 
     <a class="btn btn-dark btn-lg col-md-6 offset-md-3" href="{{path('ma_platform_home')}}">

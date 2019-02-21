@@ -37,3 +37,8 @@ ma_platform_delete:
     defaults: { _controller: MAPlatformBundle:Advert:delete }
     requirements:
         id: \d*
+
+ma_platform_editimage:
+    path: /editimage/{id}
+    defaults: { _controller: MAPlatformBundle:Advert:editImage }
+  
