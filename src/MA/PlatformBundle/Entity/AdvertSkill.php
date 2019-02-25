@@ -21,24 +21,23 @@ class AdvertSkill
      */
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="level", type="string", length=255)
-     */
-    private $advert;
-
-    /**
+   /**
      * @ORM\ManyToOne(targetEntity="MA\PlatformBundle\Entity\Advert")
      * @ORM\JoinColumn(nullable=false)
-     * 
      */
-    private $skill;
+    private $advert;
 
     /**
      * @ORM\ManyToOne(targetEntity="MA\PlatformBundle\Entity\Skill")
      * @ORM\JoinColumn(nullable=false)
      * 
+     */
+    private $skill;
+
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="Level", type="string", length=255)
      */
     private $level;
 

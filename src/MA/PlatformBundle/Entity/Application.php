@@ -5,10 +5,11 @@ namespace MA\PlatformBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Application
+ * application
  *
  * @ORM\Table(name="application")
  * @ORM\Entity(repositoryClass="MA\PlatformBundle\Repository\ApplicationRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Application
 {
@@ -42,17 +43,38 @@ class Application
      */
     private $date;
 
-    /**
+
+     /**
      * @ORM\ManyToOne(targetEntity="MA\PlatformBundle\Entity\Advert")
      * @ORM\JoinColumn(nullable=false)
      */
     private $advert;
 
-    public function __construct()
-    {
-        $this->date = new \Datetime();
+
+
+    public function __construct(){
+
+        $this->date =new \DateTime();
     }
 
+
+    
+     /**
+     * @ORM\PrePersist
+     */
+    public function increase()
+    {
+        $this->getAdvert()->increaseApplication();
+    }
+
+    
+     /**
+     * @ORM\PreRemove
+     */
+    public function decrease()
+    {
+        $this->getAdvert()->decreaseApplication();
+    }
 
     /**
      * Get id.

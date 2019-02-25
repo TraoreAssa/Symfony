@@ -10,4 +10,105 @@ namespace MA\PlatformBundle\Repository;
  */
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function myFindALL()
+    {
+        //Je passe par l'EntyManager
+        //$queryBuilder=$this->_em->createQueryBuiler()->select('a')->from($this->entityName,'a');
+
+        //2nd facon
+        // $queryBuilder= $this->createQueryBuiler('a');
+
+        // //Je recupere ma query a partir du queryBuilder
+        // $query=$queryBuilder->getQuery();
+
+        // //Je recupere ma query a partir du Query
+        // $results = $query->getResult();
+
+        // return $results;
+
+        // ==
+
+        return $this->createQueryBuiler('a')->getQuery()->getResult();
+
+        // Exemple d'utilisation
+        // $em->getRepository('MAPlatformBuldle:Advert')->myFindAll();
+    }
+    public function myFindOne()
+    {
+        $qb = $this->createQueryBuilder('a');// aquivalent de Select * from a
+        $qb->where('a.id = :id')->setParameter('id', $id); // le sql est préparé, il faut l'executer
+
+        //ici on l'execute 
+
+        return $qb->getQuery()->getResult();
+    }
+    
+    public function findByAuthorAndDate($author, $year)
+    {
+        $qb = $this->createQueryBuilder('a');// aquivalent de Select * from a
+        $qb->where('a.author = :author')->setParameter('author', $author)->andWhere('a.year = :year')->setParameter('year', $year)->orderBy('a.date', 'DESC'); // le sql est préparé, il faut l'executer
+
+        //ici on l'execute 
+
+        return $qb->getQuery()->getResult();
+    }
+    
+    public function whereCurrentYear(QueryBuilder $qb)
+    {
+        $qb = $this->createQueryBuilder('a');// aquivalent de Select * from a
+        $qb->andWhere('a.date BETWEEN :star AND :end')->setParameter('star', new \Datetime(date('Y').'-01-01'))->setParameter('end',new \Datetime(date('Y').'-12-31')); // le sql est préparé, il faut l'executer
+        
+        return $qb->getQuery()->getResult();
+
+    }
+
+    public function myFind()
+    {
+        $qb = $this->createQueryBuilder('a');// aquivalent de Select * from a
+
+        // On a séléctionner toutes les publiacation de Fred toute années confondu
+        $qb->$qb->where('a.author = :author')->setParameter('author', 'Fred');
+
+        // Je reduis a l'année en cours !!
+        $this->whereCurrentYear($qb);
+        
+        $qb->orderBy('a.date', 'DESC'); // le sql est préparé, il faut l'executer
+
+        return $qb->getQuery()->getResult();
+        // La fonction getResult retourne un tableau de resultats dans un tableau d'OBJETS
+
+        // return $qb->getQuery()->getArrayResult();
+        // return $qb->getQuery()->getSingleResult();
+        // return $qb->getQuery()->execute();
+
+    }
+
+// Function permettant de récuples candidatures d'une annonce donnée
+    public function getAdvertWithApplications()
+    {
+        $qb = $this->createQueryBuilder('a');// aquivalent de Select * from a
+
+        $qb->leftJoin('a.apllications', 'app')->addSelect('app'); // le sql est préparé, il faut l'executer
+        // $qb->innerJoin('a.apllications', 'app','WITH', 'YEAR(app.date)> 2018');
+
+        //ici on l'execute 
+        return $qb->getQuery()->getResult();
+    }
+
+
+    public function getAdvertWithCategories(array $categorynames)
+    {
+        $qb = $this->createQueryBuilder('a');// aquivalent de Select * from advert --> toutes mes annoces
+
+        //Jointure entre Advert et Category (c)
+        $qb->innerJoin('a.categories', 'c')->addSelect('c'); 
+
+        //Je decide de filtrer sur le nom de mes catecories
+        $qb->where($qb->expr()->in('c.name', $categorynames));
+
+        //ici on l'execute 
+        return $qb->getQuery()->getResult();
+    }
+
+
 }

@@ -32,7 +32,18 @@
 
                         {% endfor %}
                     </p>
-                {%endif%}
+                {% endif %}
+                <br/>
+
+                  {% if listAdvertSkills |length > 0 %}
+                    <p>
+                        Cette annonce demande les compétences suivantes :
+                        {% for advertSkill in listAdvertSkills %}
+                        {{advertSkill.skill.name}}: niveau {{advertSkill.level}}
+
+                        {% endfor %}
+                    </p>
+                {% endif %}
                 <br/>
             </div>
     

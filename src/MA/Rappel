@@ -1,0 +1,111 @@
+------- Lancer le serveur -------
+php bin/console server:run
+
+------- Crée le bundle -------
+php bin/console generate:bundle
+-> Namespace MA
+-> MAPlatformBundle
+
+Déclaration des bundle : app/AppKernel.php
+Déclaration de TOUT les ervices : container (via service.yml)
+
+---- Router:
+==> path : /hello
+==> _controller : MAPlatformBundle:Advert:view
+
+--> AdvertController.php
+--> viewAction() = c'est ici que je fais mon render(twig, data)
+
+---- TWIG:
+==> Cf.doncument Twig Sheet (2pages) -> syntaxe, héritage, include, toute la logique qui était de base dans PHP ... (parfaite séparation entre le front et le back)
+==>Affichage {{variable}}  Execution {% %}  Commentaire {# #}
+
+
+----- REQ HTTP & REPONSES HTTP -----
+==> isMethod(), Content-type... POST, GET, DELETE, PUT.
+==> return new Reponse("voici ma reponse a afficher")
+==> $this->render(twig, data)
+
+
+----- Session -----
+
+
+
+
+
+
+--> Le controller front convertie une REQ en reponse grace au noyau symfony 
+
+==> dans le routing il est obligatoire de mettre le _controller: 
+
+
+ : php bin/console server:run 
+Crée un bundle(un app) : php bin/console generate:bundle 
+Crée une BDD : php bin/console doctrine:database:create 
+Crée une table (fichier entyty.php) : php bin/console doctrine:generate:entity 
+Crée une table (fichier BDD) : php bin/console doctrine:generate:entities 
+Contenu SQL : php bin/console doctrine:schema:update --dump-sql 
+Forcé a crée dans la BDD : php bin/console doctrine:schema:update --force
+Mise a jour apres modif : php bin/console doctrine:generate:entities MAPlatformBundle:Advert
+php bin/console doctrine:schema:update --dump-sql 
+php bin/console doctrine:schema:update --force
+
+php bin/console doctrine:fixtures:load mettre les datafixtures dans la base de données
+
+
+
+api = http://api.annonce.com/add?title=montitre&author=assa&content=bnvjdvcjvj
+?=POST
+
+*--------------------------------*      *--------------------------------------*
+|   *------------------------*  |       |       |      |       |      |        | 
+|   |        Title           |  |       |  ID   |titre |author | date |content |   
+|   |                        |  |       |       |      |       |      |        | 
+|   *------------------------*  |       *--------------------------------------* 
+|   *------------------------*  |       |       |      |       |      |        | 
+|   |        Author          |  |       |       |      |       |      |        | 
+|   |                        |  |       *--------------------------------------*  
+|   *------------------------*  |       |       |      |       |      |        |    
+|   *------------------------*  |       |       |      |       |      |        |   
+|   |         Content        |  |       *--------------------------------------*     
+|   |                        |  |       |       |      |       |      |        |         
+|   *------------------------*  |       |       |      |       |      |        |            
+*-------------------------------*       *--------------------------------------*
+
+
+
+
+A ce stade dans la BDD je n'ai pas les objet 1 et 2 .... j'ai d'autres objets dont $obj5
+
+$em->persist($obj1) // prepare inserction obj1
+$em->persist($obj2) // prepare inserction obj2
+$em->detach($obj1) // annulation de la prepa de l'insert obj1
+
+$obj5=$em->getRpository(MAPlatformBundle:Advert')->find(5);//select des données 
+$obj5->setdate(new\Datetime()) // preparation d'un update
+
+puis enfin $em->flush();  // manipulation CUD effectives dans la BDD
+
+INSERT obj2 
+et 
+UPDATE OBJ2
+
+VOCABULAIRE = $em->transaction !! donc persist, flush ect sont des transaction
+
+
+$em->clear(); // supp les persist
+
+Verfication des elements persistés
+var_drump($em->contains(obj1)); =>True or False
+
+$em->persist($obj1);
+$obj1->setTitle('nouveau titre')
+$em->refresh($obj1); // mise a jour obj1 ds l'em
+
+$em->remove(obj1) // preparationdu DELETE, effective au prochain flush
+
+ACCES AU REPOSITORY DE MON ENTITE 
+=> $em->getRpository('MAPlatformBundle:Advert')
+cascade={"persist"} ==> si on supprime l'annonce ca supprime automatiquement tout ce qui lui ai associé
+
+/!\ Un service est instanciable UNE SEUL fois

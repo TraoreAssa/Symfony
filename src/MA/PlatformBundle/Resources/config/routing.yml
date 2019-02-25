@@ -41,4 +41,10 @@ ma_platform_delete:
 ma_platform_editimage:
     path: /editimage/{id}
     defaults: { _controller: MAPlatformBundle:Advert:editImage }
+
+ma_platform_catadvert:
+    path: /catadvert/{name}
+    defaults: { _controller: MAPlatformBundle:Advert:catAdvert }
+
+    
   

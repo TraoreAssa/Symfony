@@ -5,3 +5,19 @@ services:
           - "@mailer"
           - %locale%
           - 30
+          
+    ma_platform.application_mailer:
+        class: MA\PlatformBundle\Email\ApplicationMailer
+        arguments: 
+          - "@mailer"
+          
+          
+    ma_platform.application_creation:
+        class: MA\PlatformBundle\DoctrineListener\ApplicationCreationListener
+        arguments: 
+          - "@ma_platform.application_mailer"
+        tags:
+          - {name: doctrine.event_listener, event: postPersist}
+          
+        
+

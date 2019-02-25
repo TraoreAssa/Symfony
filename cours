@@ -1,0 +1,136 @@
+php -v
+cd c:\laragon\www
+php symfony.phar new Symfony 3.3.2
+cd Symfony
+//lance le serveur
+php bin/console server:run
+
+php bin/console assets:install
+//permet de forcer la prise en compte des asset ie des fichiers rajouter
+
+//voir commande de base 
+php bin/console
+//creer un bundle
+php bin/console generate:bundle
+
+//nos bundle doivent toujours etre comme ça 
+
+->Mon namespace est Ma
+
+Bundle namespace: Ma/PlatformBundle
+entré
+entré
+
+MA\platformBundle
+Configuration format (annotation, yml, xml, php) [xml]: yml
+
+//Response est une classe qui prend un contenu crée une reponse et la return
+
+a)requirements:
+        year: \d{4}
+        format: html|xml
+        permet dans routing de rajouter des specificité au variables
+
+ b)defaults: { _controller: MaPlatformBundle:Advert:viewSlug ,format: html}
+
+ ici on definit des valeurs pardefaut
+
+ //on a 2 facons de les definir comme dans a ou dans b
+
+ {_format} en rajoutant _ il le considere comme un parametre http
+ Les balises html sont interpreté
+ 
+ //le controller il a acces au model ,view et au routes ie url(adresse)
+
+ Lorsqu'on envoie une requete il va au controlleur frontal
+
+ qui envoie a routing pour gerer les path les url
+
+ dans bootswatch.com les themes inspirer de symphony
+
+ ->des code magique comme orm qui gere la creation des table quand on cree la class est une couche d'abstration
+
+ ->entité c'est la class ie la table$
+ ->le manager d'objet gere les operation create update delete sur l'objet qui une ligne de la table
+ ->repository permet d'afficher des choses
+ ->
+ fixture c'est des fausses donnée pour texter si notre code fonctionne car on a pas acces au vrai donnée de la bdd
+
+ ->app c'est le dossier de configuration
+
+->la documentation symfony est sur symphony api
+
+pour voir les info sur la requete
+:-f12
+-aller a network
+-recharger la page 
+et appuyer sur le fichier sur la pege network
+
+je ne dois jamis modifier dans config.yml
+
+->include permet d'injecter le contenu d'un fichier ici le html 
+->render permet  de retourner la vue avec les données
+
+->heritage dans les twig
+
+faire appel au pere dans fille avec extends
+ensuite {{parent()}} pour injecter dans fille le contenu de pere
+
+include fait appel a la vue
+si on veut afficher du html avec de la donne on fait appel au controller qui a acces au model et a la vue
+
+->tout ce qui est global dans mon application est dans config
+
+--> le commentaire {# #}
+
+->un service est une class qui nous peret de faire quelque chose(une fonctionnalité)
+
+-> avant de commencer à utiliser une variable ou un objet on verifie s'il existe deja car si on le cree plusieur fois ca ocuupe de la memoire
+
+->on ne touche pas au var
+
+->php bin/console debug:container commande pour voir tous les ervice existant dans symfony qui sont public
+
+->quand on cree une class on le declare pour que l'app sait quil exite
+le service dans service.yml et l'autre dans routing.yml(on associe une url a un controlleur)
+
+->les services sont utiliser quand on veut faire une action autre que mvc par exemple envoyer un mail a un user
+
+->le container de service instancie et organise les services a partir de leur les configuration dans service.yml
+
+->je declare mes bundles dans app/appKernel.php
+
+->la declartion de mes service c'est container via service.yml
+
+->Router     
+
+        path:/hello
+        _contoller:MaPlatformBundle:Advert:view
+
+        ->AdverContoller.php
+        ->viewAction()= c'est ici que je fait mon render(twig,data)
+
+
+TWIG:Cf document twig sheet (2pages )->syntaxe,heritage,include toute la logisuequi etait de base dans php..(parfaite separation entre back et back)
+Affichage {{variable}}
+excecution {% %}
+commentaire{##}
+
+Passge parmetre dans le path:
+path:/hello/advert/{id}
+
+REquete HTTP & reponser
+
+isMethod,content-type,...POST,GET,PUT,delete
+return new Response("voici ma reponse à afficher")
+$this->render(twig,data)
+
+Les sessions
+
+$session =$request->getSession();
+//on recupere le contenu de la variable user_id
+
+->php bin/console doctrine:generate:entity
+
+packaging.org ramene tout les packages json
+php -r "eval('?>'.file_get_contents('http://getcomposer.org/installer'));" permet de telecharger composer.phar

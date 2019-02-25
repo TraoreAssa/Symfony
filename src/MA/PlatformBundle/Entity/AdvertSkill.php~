@@ -21,24 +21,23 @@ class AdvertSkill
      */
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="level", type="string", length=255)
-     */
-    private $advert;
-
-    /**
+   /**
      * @ORM\ManyToOne(targetEntity="MA\PlatformBundle\Entity\Advert")
      * @ORM\JoinColumn(nullable=false)
-     * 
      */
-    private $skill;
+    private $advert;
 
     /**
      * @ORM\ManyToOne(targetEntity="MA\PlatformBundle\Entity\Skill")
      * @ORM\JoinColumn(nullable=false)
      * 
+     */
+    private $skill;
+
+      /**
+     * @var string
+     *
+     * @ORM\Column(name="Level", type="string", length=255)
      */
     private $level;
 
@@ -75,5 +74,53 @@ class AdvertSkill
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * Set advert.
+     *
+     * @param string $advert
+     *
+     * @return AdvertSkill
+     */
+    public function setAdvert($advert)
+    {
+        $this->advert = $advert;
+
+        return $this;
+    }
+
+    /**
+     * Get advert.
+     *
+     * @return string
+     */
+    public function getAdvert()
+    {
+        return $this->advert;
+    }
+
+    /**
+     * Set skill.
+     *
+     * @param \MA\PlatformBundle\Entity\Advert $skill
+     *
+     * @return AdvertSkill
+     */
+    public function setSkill(\MA\PlatformBundle\Entity\Skill $skill)
+    {
+        $this->skill = $skill;
+
+        return $this;
+    }
+
+    /**
+     * Get skill.
+     *
+     * @return \MA\PlatformBundle\Entity\Skill
+     */
+    public function getSkill()
+    {
+        return $this->skill;
     }
 }

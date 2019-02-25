@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="advert")
  * @ORM\Entity(repositoryClass="MA\PlatformBundle\Repository\AdvertRepository")
+ * @ORM\HasLifecycleCallbacks()
+ * 
  */
 class Advert
 {
@@ -61,10 +63,37 @@ class Advert
      */
     private $image;
 
-      /**
-     * @ORM\ManyToMany(targetEntity="MA\PlatformBundle\Entity\Category",cascade={"persist"})
-     */
+    /**
+    * @ORM\ManyToMany(targetEntity="MA\PlatformBundle\Entity\Category",cascade={"persist"})
+    */
     private $categories;
+
+    
+  /** 
+     * @ORM\OneToMany(targetEntity="MA\PlatformBundle\Entity\Application",mappedBy="advert")
+     * @ORM\JoinColumn(nullable=false)
+    */
+
+    private $applications;
+
+        
+    /**
+     * @ORM\Column(name="nb_applications", type="integer")
+     */
+    private $nbApplications=0;
+
+
+    public function increaseApplication()
+    {
+        $this->nbApplications++;
+    }
+
+
+    public function decreaseApplication()
+    {
+        $this->nbApplications--;
+    }
+
 
     /**
      * Get id.
@@ -226,6 +255,8 @@ class Advert
     {
         $this->date = new \Datetime();
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->applications = new \Doctrine\Common\Collections\ArrayCollection();
+
     }
 
     /**
@@ -262,5 +293,89 @@ class Advert
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * Add application.
+     *
+     * @param \MA\PlatformBundle\Entity\Application $application
+     *
+     * @return Advert
+     */
+    public function addApplication(\MA\PlatformBundle\Entity\Application $application)
+    {
+        $this->application[] = $application;
+        //liaison de l'annoce a la candidature 
+        $application->setAdvert($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove application.
+     *
+     * @param \MA\PlatformBundle\Entity\Application $application
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeApplication(\MA\PlatformBundle\Entity\Application $application)
+    {
+        return $this->application->removeElement($application);
+    }
+
+    /**
+     * Get application.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    /**
+     *@ORM\PreUpdateDate
+     */
+    // public function updateDate()
+    // {
+    //     // mettons a jour l'attribut $updateAt defini dans le lifecycle et correspondant a la date de modification de mon entité
+    //     $this->setUpdatedAt(new \Datetime);
+    //     return $this->application;
+    // }
+
+
+
+    /**
+     * Get applications.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getApplications()
+    {
+        return $this->applications;
+    }
+
+    /**
+     * Set nbApplications.
+     *
+     * @param int $nbApplications
+     *
+     * @return Advert
+     */
+    public function setNbApplications($nbApplications)
+    {
+        $this->nbApplications = $nbApplications;
+
+        return $this;
+    }
+
+    /**
+     * Get nbApplications.
+     *
+     * @return int
+     */
+    public function getNbApplications()
+    {
+        return $this->nbApplications;
     }
 }

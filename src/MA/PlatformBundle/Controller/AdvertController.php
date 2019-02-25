@@ -79,7 +79,7 @@ class AdvertController extends Controller //controler => fonction get
     {
 
         //on recupere le Repository
-
+        $em= $this->getDoctrine()->getManager();
         $repository=$this->getDoctrine()->getManager()->getRepository('MAPlatformBundle:Advert');
 
         $advert= $repository->find($id);
@@ -92,9 +92,13 @@ class AdvertController extends Controller //controler => fonction get
         $listApplications= $repository2->findBy(array('advert' => $advert));
 
 
-        return $this->render("MAPlatformBundle:Advert:view.html.twig", array(
-            'advert'=>$advert,
-            'listApplications'=>$listApplications,
+         // recuperation des skills associées a une annoce donnée
+         $listAdvertSkills = $em->getRepository('MAPlatformBundle:AdvertSkill')->findBy(array('advert' => $advert));
+
+         return $this->render("MAPlatformBundle:Advert:view.html.twig", array(
+             'advert'=>$advert,
+             'listApplications'=>$listApplications,
+             'listAdvertSkills'=>$listAdvertSkills,
             
     ));
      
@@ -255,11 +259,6 @@ class AdvertController extends Controller //controler => fonction get
    
     public function addAction(Request $request)
     {   
-     
-         //Récupération de l'entyty Manager
-         $em=$this->getDoctrine()->getManager();
-         //doctrine = Service  
-
 
         // Créer l'entité (Creation de mon annonce)
         $advert = new Advert();
@@ -268,6 +267,10 @@ class AdvertController extends Controller //controler => fonction get
         $advert->setContent('Nous recherchons un développeur spécialisé en Framework front Angular et maitrise également le Framework Mobile Ionic avec les bibliotheques de Cordova. 950$/day');
         $advert->setDate(new \Datetime);
         $advert->setPublished(true);
+
+        //Récupération de l'entyty Manager
+        $em=$this->getDoctrine()->getManager();
+        //doctrine = Service 
 
         //------------------- Image --------------
         $image= new Image();
@@ -279,7 +282,7 @@ class AdvertController extends Controller //controler => fonction get
 
         //------------------------Candidature --------------------
         //Création des Applications/Candidature 1
-        $application1 = new Application;
+        $application1 = new Application();
         $application1->setAuthor('Marc Dupont');
         $application1->setContent('Je suis un jeune etudiant Développeur Angular avec 5ans d\'experiance a la recherche d\un nouveau post. Je suis disponible dès aujourd\'hui ');
         $application1->setAdvert($advert);
@@ -287,7 +290,7 @@ class AdvertController extends Controller //controler => fonction get
         
         
         //Création des Applications/Candidature 2
-        $application2 = new Application;
+        $application2 = new Application();
         $application2->setAuthor('Assa TRAORE');
         $application2->setContent('Je suis une Développeuse Intégratrice a la recherche d\'un stage pour valider ma formation Je suis disponible dès aujourd\'hui ');
         $application2->setAdvert($advert);
@@ -308,8 +311,7 @@ class AdvertController extends Controller //controler => fonction get
         
         }
         
-           
-
+    
         //INSERT DES OBJET        
         // Persister l'entité <=> la sauvegarder dans la BDD
         $em->persist($advert); // sert a insert (Prépare toi sauvegarder(temporairement))
@@ -355,12 +357,20 @@ class AdvertController extends Controller //controler => fonction get
           array('id'=> 104, 'title'=> 'Developpeur Node'),
           array('id'=> 105, 'title'=> 'Architecte logiciel')
       );
-      return $this->render("MAPlatformBundle:Advert:menu.html.twig", array('listAdverts' => $listAdverts));
+      return $this->render("MAPlatformBundle:Advert:menu.html.twig", array('listAdverts' => $listAdverts));   
+    }
+   
+    public function catAdvertAction($name)
+    {   
+        $my_array = array($name);
+        $em=$this->getDoctrine()->getManager();
+        $repository = $em->getRepository("MAPlatformBundle:Advert");
+        $listAdverts = $repository->getAdvertWithCategories($my_array);
 
-
-        
+      return $this->render("MAPlatformBundle:Advert:catAdvert.html.twig", array('listAdverts' => $listAdverts));   
     }
     
+
     public function editImageAction($id)
     {
         $em = $this->getDoctrine()->getManager();
