@@ -1,6 +1,7 @@
 <?php
 
 namespace MA\PlatformBundle\Repository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * AdvertRepository
@@ -110,5 +111,29 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getAdverts($page, $nbPerPage)
+    {
+        $qb = $this->createQueryBuilder('a');// aquivalent de Select * from a
+
+        // Plus d'info sur Image --> JOINTURE --> addSelect permet a donctrine de faire un select sur i (donc image) et d'importer les infos dans a (Advert) 
+        $qb->leftJoin('a.image','i')->addSelect('i');
+
+        // Plus d'info sur Categories --> JOINTURE --> addSelect permet a donctrine de faire un select sur c (donc categories) et d'importer les infos dans a (Advert)
+        $qb->leftJoin('a.categories','c')->addSelect('c');
+
+        // A CE STADE J'AI DES OBJET ANNONCES AVEC TOUTES LES INFS D'IMAGE ET DE CATEGORIES !! PAS QUE LES ID MAIS L'INTEGRALITE DES VALEUR DES ATTRIBUTS
+
+        //specification de mon DQL , ordre par date decroissante - le plus reecent en 1er
+        $qb->orderBy('a.date','DESC')->getQuery();
+
+        // DEFINISSONS L'ANNONCE A  PARTIR DE LAQUELLE ON COMMENCE NOTRE SITE --> MISE EN PLACE DE LA PAGINATION
+        
+        $qb->setFirstResult(($page-1)*$nbPerPage)->setMaxResults($nbPerPage);
+
+        // return $qb->getResult();
+        return new Paginator($qb, true);
+    }
+
 
 }
+

@@ -37,6 +37,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'bootstrap_3_layout.html.twig'
   
 
 # Doctrine Configuration
@@ -68,3 +70,13 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+# Stof\DoctrineExtensionsBulndle configuration
+
+stof_doctrine_extensions:
+    orm:
+        default:
+            sluggable: true
+
+# D'autre sont : *Tree* - Automatise la gestion des arbres et ajoute des méthodes spécifiques au reposytory. *Transtable* - Pour traduire des attribut spécifiques de vos entites dans differents langages. *Timestampable* - Automatiser la mise a jour d'attribut de typedate dans nos antités. *Sortable* - Gerer les entities ordonnées, c'est a dire avec un ordre précis.
+

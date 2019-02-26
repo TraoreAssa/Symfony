@@ -15,7 +15,7 @@ class ApplicationCreationListener
     */
     private $applicationMailer;
 
-    public function _construct(\Swift_Mailler $mailer)
+    public function _construct(\ApplicationMailer $applicationMailer)
     {
         $this->applicationMailer = $applicationMailer;  
     }

@@ -37,7 +37,7 @@
 
                   {% if listAdvertSkills |length > 0 %}
                     <p>
-                        Cette annonce demande les compétences suivantes :
+                        <strong><em> Cette annonce demande les compétences suivantes : </em></strong><br>
                         {% for advertSkill in listAdvertSkills %}
                         {{advertSkill.skill.name}}: niveau {{advertSkill.level}}
 
@@ -54,19 +54,26 @@
 
     <h3 class=" col-md-8 offset-md-2 text-center">Liste des Candidatures</h3>
 
-        <ul>
-            {% for app in listApplications %}
-                <div class="col-md-4 offset-md-4 well text-center">
-                        <i><strong>{{app.author}} - le {{app.date | date('d/m/Y')}}</strong></i><br/>
-                        <p>{{app.content}}</p>
+            
+    <div class="col-md-4 offset-md-4 well text-center">
+        {% for app in listApplications %}
+            <i><strong>{{app.author}} - le {{app.date | date('d/m/Y')}}</strong></i><br/>
+            <p>{{app.content}}</p>
+            <br><br>
+                    
+            {% else %}
+                Pas encore d'Application Sorry !!
+        {% endfor %}
                 </div>
-            {%else%}
-                <li>
-                    Pas encore d'Application Sorry !!!
-                </li>
-            {% endfor %}
-        </ul>
+            <br>    
+            
+            
+        
     
+
+    
+{# <p>{{ advert_test.slug }}</p> #}
+
 
     <br/>
 
@@ -87,5 +94,12 @@
             Supprimer l'annonce
     <br/>
     </a>
+
+
+    <br/>
+    <br/>
+    <br/>
+
+    
 
 {% endblock %}

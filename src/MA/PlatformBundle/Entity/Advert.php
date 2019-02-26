@@ -3,6 +3,7 @@
 namespace MA\PlatformBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Advert
@@ -55,7 +56,7 @@ class Advert
     /**
      * @ORM\Column(name="published", type="boolean")
      */
-    private $published;
+    private $published = true;
 
     /**
      * @ORM\OneToOne(targetEntity="MA\PlatformBundle\Entity\Image",cascade={"persist"})
@@ -67,6 +68,12 @@ class Advert
     * @ORM\ManyToMany(targetEntity="MA\PlatformBundle\Entity\Category",cascade={"persist"})
     */
     private $categories;
+
+    /**
+    * @Gedmo\Slug(fields={"title"}) 
+    * @ORM\Column(name="slug", type="string", length=255, unique=true)
+    */
+    private $slug;    
 
     
   /** 
@@ -377,5 +384,29 @@ class Advert
     public function getNbApplications()
     {
         return $this->nbApplications;
+    }
+
+    /**
+     * Set slug.
+     *
+     * @param string $slug
+     *
+     * @return Advert
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug.
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

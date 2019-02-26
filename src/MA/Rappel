@@ -109,3 +109,30 @@ ACCES AU REPOSITORY DE MON ENTITE
 cascade={"persist"} ==> si on supprime l'annonce ca supprime automatiquement tout ce qui lui ai associé
 
 /!\ Un service est instanciable UNE SEUL fois
+
+------------------------------------------------------------------------------------------------------
+
+
+
+Alternative à la creation de formulaires - via CLI :
+
+1 - php bin/console doctrine:generate:form MAPlatformBundle:Advert
+
+2- J'obtiens le fichier Adverttype avec dedans :
+  public function buildForm(FormBuilderInterface $builder, array $options)
+  {
+    $builder
+      ->add('date',      DateTimeType::class)
+      ->add('title',     TextType::class)
+      ->add('author',    TextType::class)
+      ->add('content',   TextareaType::class)
+      ->add('published', CheckboxType::class, array('required' => false))
+      ->add('save',      SubmitType::class);
+  }
+  
+  3- rien de plus simple ds le controleur :
+  <?php
+// Dans le contrôleur
+
+$advert = new Advert;
+$form = $this->get('form.factory')->create(AdvertType::class, $advert);
