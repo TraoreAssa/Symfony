@@ -11,9 +11,9 @@
     <i>Par {{advert.author}}, le {{ advert.date|date('d/m/Y')}} </i>
     <br>
         <br>
-        {% if advert.image is not null%}
-            <img src="{{advert.image.url}}" width="350px" alt=" {{advert.image.alt}}">
-        {% endif%}
+        {% if advert.image is not null %}
+            <img src="{{ asset(advert.image.uploadDir ~ '/' ~ advert.image.url) }}" width=250 height=250 alt=" {{advert.image.alt}}">
+        {% endif %}
 
         <div class="well bg-dark col-md-11 offset-md-1 text-white text-center">
 

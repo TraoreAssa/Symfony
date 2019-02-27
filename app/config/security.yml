@@ -1,24 +1,51 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
+
+# encoder va 'encode' les mots dde passe des utilisateurs
 security:
+    encoders:
+        Symfony\Component\Security\User\User: plaintext
+
+    # on va avoir les froits d'acces a telle ou telle ressources/page
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER,ROLE_ADMIN,ROLE_ALLOWED_TO_SWITCH]
+
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+
+    # fournisseurs d'utilisateurs (c'est a eux que s'adressent les firewalls)
     providers:
         in_memory:
-            memory: ~
+            memory: 
+                users:
+                    user: {password: userpass, roles:['ROLE_USER']}
+                    admin: {password: adminpass, roles:['ROLE_ADMIN']}
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
         main:
-            anonymous: ~
-            # activate different ways to authenticate
+            pattern: ^/
+            anonymous: true
+            form_login:
+                login_path: login
+                check_path: login_check
+            logout:
+                path: logout
+                target: login
 
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
+    # access_control:
 
-            # https://symfony.com/doc/current/security/form_login_setup.html
-            #form_login: ~
+
+    #     main:
+    #         anonymous: ~
+    #         # activate different ways to authenticate
+
+    #         # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+    #         #http_basic: ~
+
+    #         # https://symfony.com/doc/current/security/form_login_setup.html
+    #         #form_login: ~

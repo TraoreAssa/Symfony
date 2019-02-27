@@ -133,7 +133,7 @@ class AdvertController extends Controller //controler => fonction get
          $advert_test->setContent('Développeur d\'une application Java.');
          $advert_test->setPublished(true);
 
-         $em->persist($advert_test);
+        // $em->persist($advert_test);
          $em->flush(); //Sauvegarde le dans la BDD 
 
 
@@ -343,11 +343,11 @@ class AdvertController extends Controller //controler => fonction get
         
         $advert->setDate(new \Datetime());
 
-        $image= new Image();
-        $image->setUrl('https://www.cnetfrance.fr/i/edit/2018/10/microsoft-1-big.jpg');
-        $image->setAlt('Vend moi du reve');
+        // $image= new Image();
+        // $image->setUrl('https://www.cnetfrance.fr/i/edit/2018/10/microsoft-1-big.jpg');
+        // $image->setAlt('Vend moi du reve');
 
-        $advert->setImage($image);
+        // $advert->setImage($image);
 
 
         //on va creer un FormBuilder grace a un service factory
@@ -379,19 +379,21 @@ class AdvertController extends Controller //controler => fonction get
         // $form =$formBuilder->getform();
         $form = $this->get('form.factory')->create(AdvertType::class, $advert);
 
-        if ($request->isMethod('POST') &&  $form->handleRequest($request)->isValid){
+        if ($request->isMethod('POST') &&  $form->handleRequest($request)->isValid())
+        {
 
-            // $form->handleRequest($request);
-            // if($form->isValid())
-            // {
-                $em=$this->getDoctrine()->getManager();
-                $em->persist($advert);
-                $em->flush(); //Sauvegarde le dans la BDD 
+            // //on deplace l'image choisie dans le bon dossier pour la stocker
+            // $advert->getImage()->upload(); on la fait automatiquement dans image.php
+
+            $advert->getImage()->monUpload();
+
+            $em=$this->getDoctrine()->getManager();
+            $em->persist($advert);
+            $em->flush(); //Sauvegarde le dans la BDD 
     
-                $request->getSession()->getFlashBag()->add('info', 'Votre annoce a bien été ajouté');
+            $request->getSession()->getFlashBag()->add('info', 'Votre annoce a bien été ajouté');
 
-                return $this->redirectToRoute('ma_platform_view', array('id'=> $advert->getId()));
-            // }
+            return $this->redirectToRoute('ma_platform_view', array('id'=> $advert->getId()));
 
         //     $session = $request->getSession();
         //     // on ajoute une certaine annoce et on la publie
@@ -594,5 +596,35 @@ class AdvertController extends Controller //controler => fonction get
         
         $em->flush(); //Sauvegarde le dans la BDD 
         return new Response('OK');
+    }
+
+    public function testAction()
+    {
+        $advert= new Advert();
+        $advert->setTitle('aaa'); // attention 10min
+        $advert->setAuthor('G'); // attention 2 min 
+        $advert->setContent('');
+        $advert->setPublished(true);
+
+        $image= new Image();
+        $image->setUrl('https://www.cnetfrance.fr/i/edit/2018/10/microsoft-1-big.jpg');
+        $image->setAlt('Microsoft');
+        $advert->setImage($image);
+
+        // on recu le service validation
+        $validator = $this->get('validator');
+
+        // on veut declencher la validation sur notre objet
+        $listErrors = $validator->validate($advert);
+
+        if (count($listErrors)>0) 
+        {
+            return new Response((string)$listErrors);
+        }
+        else
+        {
+            return new Response("Pas de soucis, l'annonce est bien valide");
+        }
+
     }
 }

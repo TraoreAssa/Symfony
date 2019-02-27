@@ -1,3 +1,8 @@
+-> Telecharger symfony
+-> Télécharger PHP
+-> Modifier les variables 
+
+
 ------- Lancer le serveur -------
 php bin/console server:run
 
@@ -50,7 +55,10 @@ Mise a jour apres modif : php bin/console doctrine:generate:entities MAPlatformB
 php bin/console doctrine:schema:update --dump-sql 
 php bin/console doctrine:schema:update --force
 
-php bin/console doctrine:fixtures:load mettre les datafixtures dans la base de données
+php bin/console doctrine:fixtures:load  mettre les datafixtures dans la base de données
+
+php bin/console doctrine:generate:form MAPlatformBundle:Advert;
+
 
 
 
@@ -111,6 +119,7 @@ cascade={"persist"} ==> si on supprime l'annonce ca supprime automatiquement tou
 /!\ Un service est instanciable UNE SEUL fois
 
 ------------------------------------------------------------------------------------------------------
+
 
 
 

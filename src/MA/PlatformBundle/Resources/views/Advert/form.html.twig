@@ -14,7 +14,10 @@
   {{ form_errors(form) }}
 
   {# Génération du label + error + widget pour un champ. #}
-  {{ form_row(form.date) }}
+
+  {% if form.date is defined %}
+    {{ form_row(form.date) }}
+  {% endif %}
 
   {# Génération manuelle et éclatée : #}
   <div class="form-group">
@@ -42,9 +45,10 @@
   {{ form_row(form.author) }}
   {{ form_row(form.published) }}
 
-  {{ form_row(form.categories) }}
-  <a href="#" id="add_category" class="btn btn-default">Ajouter une catégorie</a>
-
+  {% if form.categories is defined %}
+    {{ form_row(form.categories) }}
+    <a href="#" id="add_category" class="btn btn-default">Ajouter une catégorie</a>
+  {% endif %}
   {# Pour le bouton, pas de label ni d'erreur, on affiche juste le widget #}
   {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
 
@@ -65,7 +69,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     // On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
-    var $container = $('div#oc_platformbundle_advert_categories');
+    var $container = $('div#ma_platformbundle_advert_categories');
 
     // On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
     var index = $container.find(':input').length;
